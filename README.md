@@ -1,13 +1,25 @@
 # MongoDB-wstawka
 
 ### Podstawowe polecenia
+Pokazywanie dostępnych baz danych
 ```
-show dbs - pokazywanie dostępnych baz danych
-use [] - może też tworzyć 
-db.createCollection("") - tworzy kolekcje
-
-db.dropDatabase() - usuwanie bazy
-db.students.find() - wyświetlanie danych 
+show dbs
+```
+Może też tworzyć lub zaznaczyć do korzystania bazy 
+```
+use []
+```
+Tworzy kolekcje
+```
+db.createCollection("")
+```
+Usuwanie bazy
+```
+db.dropDatabase()
+```
+Wyświetlanie danych
+```
+db.students.find() 
 ```
 ### Wstawianie wartości
 ```
@@ -25,13 +37,21 @@ db.students.insertMany([{name: "patrik", age: 38, gps: 1.5},{name: "sandy",age: 
 ```
 db.students.find().sort(name: 1) alfabetycznie 
 db.students.find().limit(1)
+```
+Wyszukiwanie na podstawie imienia
+```
 db.students.find({name: "Spange"})
+```
+Wyświetlanie tylko imion
+```
 db.students.find({}, {name: true})
 ```
 ### Modyfikowanie danych
 Modyfikowanie pojedyńczych rekordów
 
-$set - ustawianie 
+- $set - ustawianie 
+- $unset - usuwanie columny
+- $exists - czy istnieje w danym stanie
 ```
 db.students.updateOne({filter},{update})
 
@@ -56,39 +76,67 @@ db.studetns.deleteMany({fullTime: false})
 
 db.students.deleteMany({registerDate: {$exists: false}})
 ```
+$ne - not equal 
 ```
 db.students.find({name: {$ne: "gary"}})
-
+```
+$lt - less then
+```
 db.students.find({age: {$lt: 20}})
-
+```
+$lte - less then and equal
+```
 db.students.find({age: {$lte: 20}})
-
+```
+$gt - greater then
+```
 db.students.find({age: {$gt: 20}})
-
+```
+$gte - greater then and equal
+```
 db.students.find({age: {$gte: 20}})
-
+```
+Można podać jeszcze wartości pomiędzy, przedział wartości
+```
 db.students.find({gpa: {$gte: 3,$lte: 4}})
 ```
+$in - jeżeli wartość znajduje się w tablicy danych to wyświetli
 ```
 db.students.find({name: {$in: ["sandy","patrik"]}})
-
+```
+$nin - not in jeżeli nie znajduje się w tablicy wartości to wyświetli
+```
 db.students.find({name: {$nin: ["sandy","patrik"]}})
-
+```
+$and - aby rekord musi spełniać oby dwa paremetry 
+```
 db.students.find({$and: [{fullTime: false}, {age: {$lte: 22}}]})
-
+```
+$or - or jeden z wymienionych elementów rekord musi spełniać 
+```
 db.students.find({$or: [{fullTime: false}, {age: {$lte: 22}}]})
-
-db.students.find({$nor: [{fullTime: false}, {age: {$lte: 22}}]}) - kazde z nich musi byc fałszywe
-
-db.students.find({age: {$not: {$gte: 30}}}) wyswietla ktore nie spełniaja warunku
-
+```
+$nor - kazde z nich musi byc fałszywe
+```
+db.students.find({$nor: [{fullTime: false}, {age: {$lte: 22}}]}) 
+```
+$nor - wyswietla ktore nie spełniaja warunku
+```
+db.students.find({age: {$not: {$gte: 30}}}) 
+```
+### Indeksowanie 
+Tworzenie statusów indeksowania co pozwala na nieprzeszukiwanie całej 
+```
 db.students.find({name: "larry"}).explain("executionStats")
 db.students.createIndex({name: 1})
-numer indeksu do wyszukiwania indeksów szybko
-
+```
+Numer indeksu do wyszukiwania indeksów szybko
+```
 db.students.getIndexes()
 db.students.dropIndex("name_1")
-
+```
+### Usuwanie kolecji/tablicy
+```
 show collections
 
 db.createCollection("teachers", {capped: true, size: 10000000, max: 100}, {autoIndexId: false})
